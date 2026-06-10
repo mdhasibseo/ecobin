@@ -17,6 +17,17 @@ router.post(
   protect,
   upload.single("image"),
   (req, res) => {
+
+    console.log("IMAGE ROUTE HIT");
+    console.log("FILE =", req.file);
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+    }
+
     res.json({
       success: true,
       image: "/uploads/" + req.file.filename,
