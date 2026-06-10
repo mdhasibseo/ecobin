@@ -28,29 +28,31 @@ const getAllUsers = async (
 // Dashboard Stats
 const getStats = async (req, res) => {
   try {
-    const totalUsers =
-      await User.countDocuments();
+    console.log("===== STATS START =====");
 
-    const totalWaste =
-      await Waste.countDocuments();
+    const totalUsers = await User.countDocuments();
+    console.log("totalUsers =", totalUsers);
 
-    const pendingRedeems =
-      await Redeem.countDocuments({
-        status: "Pending",
-      });
+    const totalWaste = await Waste.countDocuments();
+    console.log("totalWaste =", totalWaste);
 
-    const totalRedeems =
-      await Redeem.countDocuments();
+    const pendingRedeems = await Redeem.countDocuments({
+      status: "Pending",
+    });
+    console.log("pendingRedeems =", pendingRedeems);
 
-    const wasteData =
-      await Waste.find();
+    const totalRedeems = await Redeem.countDocuments();
+    console.log("totalRedeems =", totalRedeems);
 
-    const totalWeight =
-      wasteData.reduce(
-        (sum, item) =>
-          sum + item.weight,
-        0
-      );
+    const wasteData = await Waste.find();
+    console.log("wasteData length =", wasteData.length);
+
+    const totalWeight = wasteData.reduce(
+      (sum, item) => sum + Number(item.weight || 0),
+      0
+    );
+
+    console.log("totalWeight =", totalWeight);
 
     res.json({
       success: true,
@@ -63,6 +65,8 @@ const getStats = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("STATS ERROR =", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
@@ -205,6 +209,7 @@ const getAllWaste = async (
 ) => {
   try {
     // Waste Types
+    console.log("===== ANALYTICS START =====");
     const wasteTypes =
       await Waste.aggregate([
         {
@@ -290,6 +295,7 @@ const getAllWaste = async (
       },
     });
   } catch (error) {
+    console.error("ANALYTICS ERROR =", error);
     res.status(500).json({
       success: false,
       message:
