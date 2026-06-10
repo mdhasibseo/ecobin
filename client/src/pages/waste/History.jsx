@@ -1,6 +1,7 @@
 import UserLayout from "../../layouts/UserLayout";
 import { useEffect, useState } from "react";
 import { getWasteHistory } from "../../services/wasteService";
+const SERVER_URL = import.meta.env.VITE_API_URL.replace("/api", "");
 
 const History = () => {
   const [history, setHistory] = useState([]);
@@ -71,7 +72,7 @@ const History = () => {
                     <tr key={item._id} className="border-t hover:bg-gray-50">
                       <td className="p-4">
                         <img
-                          src={`http://localhost:5000${item.image}`}
+                          src={`${SERVER_URL}${item.image}`}
                           alt=""
                           className="w-12 h-12 md:w-14 md:h-14 rounded-lg object-cover"
                         />

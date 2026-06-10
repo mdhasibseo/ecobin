@@ -47,7 +47,7 @@ const WasteManagement = () => {
                 <tr key={waste._id} className="border-t">
                   <td className="p-4">
                     <img
-                      src={`http://localhost:5000${waste.image}`}
+                       src={`https://ecobin-api-ers9.onrender.com${waste.image}`}
                       alt=""
                       className="w-16 h-16 object-cover rounded"
                     />
