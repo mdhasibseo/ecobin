@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
-
 import AdminLayout from "../../layouts/AdminLayout";
-
 import { getAllWaste } from "../../services/adminService";
+
+// ✅ FIX: same helper as History.jsx
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return "";
+  if (imagePath.startsWith("http")) return imagePath;
+  const base = (import.meta.env.VITE_API_URL || "https://ecobin-api-ers9.onrender.com/api")
+    .replace("/api", "");
+  return `${base}${imagePath}`;
+};
 
 const WasteManagement = () => {
   const [wastes, setWastes] = useState([]);
@@ -11,7 +18,6 @@ const WasteManagement = () => {
     const loadWaste = async () => {
       try {
         const data = await getAllWaste();
-
         setWastes(data.wastes);
       } catch (error) {
         console.log(error);
@@ -31,13 +37,9 @@ const WasteManagement = () => {
             <thead className="bg-green-50">
               <tr>
                 <th className="p-4">Image</th>
-
                 <th className="p-4">User</th>
-
                 <th className="p-4">Type</th>
-
                 <th className="p-4">Weight</th>
-
                 <th className="p-4">Points</th>
               </tr>
             </thead>
@@ -46,19 +48,16 @@ const WasteManagement = () => {
               {wastes.map((waste) => (
                 <tr key={waste._id} className="border-t">
                   <td className="p-4">
+                    {/* ✅ FIX: use helper instead of hardcoded localhost */}
                     <img
-                       src={`https://ecobin-api-ers9.onrender.com${waste.image}`}
+                      src={getImageUrl(waste.image)}
                       alt=""
                       className="w-16 h-16 object-cover rounded"
                     />
                   </td>
-
                   <td className="p-4">{waste.user?.name}</td>
-
                   <td className="p-4">{waste.wasteType}</td>
-
                   <td className="p-4">{waste.weight} KG</td>
-
                   <td className="p-4 text-green-600">{waste.points}</td>
                 </tr>
               ))}

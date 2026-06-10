@@ -1,18 +1,26 @@
 import UserLayout from "../../layouts/UserLayout";
 import { useEffect, useState } from "react";
 import { getWasteHistory } from "../../services/wasteService";
-const SERVER_URL = import.meta.env.VITE_API_URL.replace("/api", "");
+
+// ✅ FIX: helper to build correct image URL for both local and production
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return "";
+  // If it's already a full URL (e.g. Cloudinary), return as-is
+  if (imagePath.startsWith("http")) return imagePath;
+  // Otherwise prepend the API base (without /api)
+  const base = (import.meta.env.VITE_API_URL || "https://ecobin-api-ers9.onrender.com/api")
+    .replace("/api", "");
+  return `${base}${imagePath}`;
+};
 
 const History = () => {
   const [history, setHistory] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHistory = async () => {
       try {
         const data = await getWasteHistory();
-
         setHistory(data.wastes || []);
       } catch (error) {
         console.log(error);
@@ -37,10 +45,7 @@ const History = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Waste History</h1>
-
-          <p className="text-gray-500 mt-2">
-            Track all your recycling activities.
-          </p>
+          <p className="text-gray-500 mt-2">Track all your recycling activities.</p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
@@ -49,13 +54,9 @@ const History = () => {
               <thead className="bg-green-50">
                 <tr>
                   <th className="p-4 text-left">Image</th>
-
                   <th className="p-4 text-left">Type</th>
-
                   <th className="p-4 text-left">Weight</th>
-
                   <th className="p-4 text-left">Points</th>
-
                   <th className="p-4 text-left">Date</th>
                 </tr>
               </thead>
@@ -71,21 +72,16 @@ const History = () => {
                   history.map((item) => (
                     <tr key={item._id} className="border-t hover:bg-gray-50">
                       <td className="p-4">
+                        {/* ✅ FIX: use helper instead of hardcoded localhost */}
                         <img
-                          src={`${SERVER_URL}${item.image}`}
+                          src={getImageUrl(item.image)}
                           alt=""
                           className="w-12 h-12 md:w-14 md:h-14 rounded-lg object-cover"
                         />
                       </td>
-
                       <td className="p-4 font-medium">{item.wasteType}</td>
-
                       <td className="p-4">{item.weight} KG</td>
-
-                      <td className="p-4 text-green-600 font-semibold">
-                        +{item.points}
-                      </td>
-
+                      <td className="p-4 text-green-600 font-semibold">+{item.points}</td>
                       <td className="p-4">
                         {new Date(item.createdAt).toLocaleDateString()}
                       </td>
